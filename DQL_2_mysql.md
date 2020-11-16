@@ -12,11 +12,11 @@
 
 ```mysql
 select count(*) from beauty;
-这里输出12行
+#这里输出12行
 select count(*) from boys;
-这里输出4行
+#这里输出4行
 select name,boyname from boys,beauty
-那么最终结果就是48行
+#那么最终结果就是48行
 ```
 
 ```mysql
@@ -24,7 +24,7 @@ select count(*) from beauty;
 select count(*) from boys;
 select name,boyname from boys,beauty
 where beauty.boyfrinend_id=boys.id;
-这里的就正常了
+#这里的就正常了
 ```
 
 #### 连接查询的分类
@@ -55,6 +55,14 @@ where beauty.boyfrinend_id=boys.id;
 
 #### sql 92 标准
 
+##### 特点
+
+1. 多表连接的结果是多表的交集部分
+2. n表连接最少需要n-1个连接条件
+3. 多表连接的顺序没有要求
+4. 一般需要为表起别名
+5. 可以搭配之前学习的各种查询一同使用
+
 ##### 等值连接
 
 ```mysql
@@ -64,7 +72,7 @@ where beauty.boyfrinend_id=boys.id;
 ```
 
 ```mysql
-案例：查询员工名对应的部门名
+#案例：查询员工名对应的部门名
 select last_name,department_name
 from employees,departments
 where employees.`department_id`=departments.`department_id`;
@@ -78,7 +86,139 @@ from employees as e,departments as d
 where e.`department_id`=d.`department_id`;
 ```
 
+```mysql
+#案例：查询有奖金的员工名，部门名
+select last_name,department_name,commission_pct
+from employees as e,departments as d
+where e.`department_id`=d.`department_id`
+and e.commission_pct is not null;
+```
 
+```mysql
+#查询城市名中第二个字符为o的员工的部门名和城市名
+select department_name,city
+from departments as d,locations as l
+where d.`location_id`=l.`location_id`
+and city like '_o%';
+```
+
+```mysql
+#案例： 查询每个城市的部门个数 
+select count(*),city
+from departments as d,locations as l
+where d.`location_id`=l.`location_id`
+group by city;
+```
+
+##### 非等值连接
+
+涉及到一个表中的某个元素要对应另一个表中的多个元素，可以用到非等值连接
+
+##### 自连接
+
+自己连接自己
+
+```mysql
+#案例： 查询员工和上级的名称
+select e.employee_id,e.last_name,m.employee_id,m.last_name
+from employees as e,employees as m
+where e.`manager_id`=m.`employee_id`
+```
+
+#### sql 99 标准
+
+##### 特点
+
+1. 添加排序分组筛选
+2. inner可以省略
+3. 筛选条件放在where后面，连接条件放在了on的后面，提高了代码的可读性
+4. inner join连接和sql92语法中的等值连接效果是一样的，都是查询交集部分
+
+```mysql
+语法：
+    select 查询列表
+    from 表1 别名
+    join 表2 别名 
+    on 连接条件
+    where 筛选条件
+    group by 分组
+    having 筛选条件
+    order by 排序列表
+
+内连接（*****）:inner
+外连接
+    左外（*****）:left [outer]
+    右外（*****）:right [outer]
+    全外:full[outer]
+交叉连接
+```
+
+##### 内连接
+
+```mysql
+select 查询列表
+from 表1 别名
+inner join 表2 别名
+on 连接条件；
+```
+
+分类：
+
+###### 等值连接
+
+```mysql
+#案例一：查询员工名，部门名
+select last_name,department_name
+from employees as e
+inner join departments as d
+on e.`department_id`=d.`department_id`;
+
+#案例二：查询名字中包含e的员工名和工种名
+select last_name,job_title
+from employees as e
+inner join jobs as j
+on e.`job_id`=j.`job_id`
+where e.`last_name` like '%e%';
+
+#案例三：查询部门个数>3的城市名和部门个数（添加分组+筛选）,
+select count(*),city
+from departments as d
+inner join locations as l
+on d.`location_id`=l.`location_id`
+group by city
+having count(*)>3;
+
+#案例四：查询哪个部门的员工个数>3的部门名和员工个数，并按个数排序（降序）。
+select count(*),department_name
+from employees as e
+inner join departments as d
+on e.`department_id`=d.`department_id`
+group by department_name
+having count(*)>3
+order by count(*) desc;
+
+#查询员工名，部门名，工种名，并按照部门名排序
+select last_name,department_name,job_title
+from employees as e
+inner join departments as d on e.`department_id`=d.`department_id`
+inner join jobs as j on e.`job_id`=j.`job_id`
+order by department_name;
+
+```
+
+###### 非等值连接
+
+###### 自连接
+
+
+
+##### 外连接
+
+
+
+
+
+​    
 
 
 
