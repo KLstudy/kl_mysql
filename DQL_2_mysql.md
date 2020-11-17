@@ -214,6 +214,67 @@ order by department_name;
 
 ##### 外连接
 
+###### 应用场景
+
+用于查询一个表有，另一个表中没有的记录
+
+###### 特点
+
+1. 外连接的查询结果为主表中的所有记录
+   - 如果从表中有和它匹配的，则显示匹配的值
+   - 如果从表中没有和它匹配的，则显示null
+   - 外连接查询结果=内连接结果+主表中有而从表没有的记录
+
+2. 左外连接：left join左边是主表
+
+   右外连接：right join右边是主表
+
+3. 左外和右外交换两个表的顺序可以实现同样的效果
+
+###### 应用
+
+左（右）外连接
+
+```mysql
+#案例一：查询男朋友不在男神表的女神名（左外连接）
+select b.name,bo.*
+from beauty b
+left outer join boys bo
+on b.boyfriend_id=bo.id
+where bo.id is null;
+```
+
+```mysql
+# 查询哪个部门没有员工
+use myemployees;
+select d.*,e.employee_id
+from departments as d
+left outer join employees as e
+on d.department_id=e.department_id
+where e.employee_id is null;
+```
+
+全外连接
+
+展现出左右外连接的所有部分
+
+##### 交叉连接
+
+说明：说白了就是一个笛卡尔乘积
+
+```mysql
+use girls;
+select b.*,bo.*
+from beauty as b
+cross join boys as bo;
+```
+
+### sql 92 & sql 99 PK
+
+
+
+
+
 
 
 
