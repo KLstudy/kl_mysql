@@ -42,7 +42,7 @@ creat table <表名>（
 
 
 
-# DBQ 语言
+# DQL 语言
 
 
 
